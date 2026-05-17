@@ -59,3 +59,29 @@ USER node
 
 EXPOSE 8080
 CMD ["node", "app.js"]
+
+## Continuous Integration / Continuous Deployment
+
+The project is integrated with GitHub Actions using the `docker/build-push-action@v5`. This workflow provides:
+
+*   **Buildx Support:** Utilizes Moby BuildKit for parallel builds and advanced cache exports.
+*   **GHA Backend Caching:** Layers are stored in the GitHub Actions cache (`type=gha`), ensuring that builds remain performant across different runner instances.
+*   **Automated Versioning:** Images are tagged and pushed to Docker Hub automatically upon commits to the `main` branch.
+
+---
+
+## Implementation Instructions
+
+### Local Build and Execution
+1.  **Build the image:**
+    `docker build -t toxic-app4 .`
+2.  **Instantiate the container:**
+    `docker run -d -p 8080:8080 --name production-app toxic-app4`
+
+### Verification
+*   **Check Image Size:**
+    `docker images toxic-app4`
+*   **Audit User Identity:**
+    `docker exec production-app whoami` (Expected output: `node`)
+*   **Test Connectivity:**
+    `curl http://localhost:8080` (Expected output: `Hello from Node.js`)
